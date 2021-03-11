@@ -9,6 +9,7 @@
 #import "MVVMViewModel.h"
 #import "MVCObject.h"
 #import "YYModel.h"
+#import <SVProgressHUD.h>
 
 @interface MVVMViewModel ()
 @property (nonatomic,strong) NSMutableArray *dataArray;
@@ -28,9 +29,9 @@
 
 -(void)loadData{
     
-    
+    [SVProgressHUD showWithStatus:@"开始加载"];
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-       
+       [SVProgressHUD showWithStatus:@"加载。。。"];
         [NSThread sleepForTimeInterval:1];
         
         NSArray *tempArray =@[@{@"className":@"语文",@"score":@"98"},@{@"className":@"数学",@"score":@"98"},@{@"className":@"英语",@"score":@"98"},@{@"className":@"物理",@"score":@"98"},@{@"className":@"化学",@"score":@"98"}];
@@ -44,7 +45,10 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             if(self.successBlock){
-                self.successBlock(self.dataArray);
+                [SVProgressHUD showSuccessWithStatus:@"加载完成"];
+                [SVProgressHUD dismissWithCompletion:^{
+                    self.successBlock(self.dataArray);
+                }];
             }
         });
     });
